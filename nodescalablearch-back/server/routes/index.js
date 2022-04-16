@@ -17,6 +17,10 @@ function init(server) {
     server.use('/api', apiRoute);
     server.use('/home', homeRoute);
     // server.use('/error', errorRoute);
+
+    server.get('/list', (req, res) => {
+        res.json(server._router.stack);
+    });
 }
 
 module.exports = {

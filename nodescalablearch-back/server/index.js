@@ -7,14 +7,16 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const listEndpoints = require("express-list-endpoints");
 
 module.exports = function () {
     let server = express(),
         create,
         start;
 
+    let routes = require('./routes');
+
     create = function (config, db) {
-        let routes = require('./routes');
 
         // Server settings
         server.set('env', config.env);
@@ -43,6 +45,19 @@ module.exports = function () {
         server.use('/uploads', express.static('uploads'));
         server.set('views', server.get('viewDir'));
 
+        server.get('/asd', (req, res) => {
+            var resList = [];
+            listEndpoints(server).forEach(element => {
+                // console.log(element);
+
+                resList.push(element.methods[0]);
+            });
+
+            console.log(resList);
+
+            // res.json(listEndpoints(server));// Showing List of Routes
+        })
+
         // Set up routes
         routes.init(server);
     };
@@ -52,7 +67,7 @@ module.exports = function () {
             port = server.get('port');
 
         server.listen(port, function () {
-            console.log(`Express listeningon -- http://${hostname}:${port}`);
+            console.log(`Express listening on -- http://${hostname}:${port}`);
         });
     };
 

@@ -10,12 +10,12 @@ function loginUser(request, response) {
 
     User.findOne({
         email: email
-    }, function (error, user) {
+    }, function (error, userRes) {
         if (error) {
             throw error;
         }
 
-        if (!user) {
+        if (!userRes) {
             return response.send({
                 success: false,
                 message: 'User not found',
@@ -23,9 +23,9 @@ function loginUser(request, response) {
         }
 
         // Check if password matches
-        User.comparePassword(password, function (error, isMatch) {
+        userRes.comparePassword(password, function (error, isMatch) {
             if (isMatch && !error) {
-                var token = jwt.sign(user.toJSON(), db.secret, {
+                var token = jwt.sign(userRes.toJSON(), db.secret, {
                     expiresIn: 10080,
                 });
 
